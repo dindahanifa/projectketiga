@@ -10,23 +10,22 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
- void changePage(){
-  Future.delayed(Duration(seconds: 3), () async {
+  @override
+  void initState() {
+    super.initState();
+    changePage();
+  }
+
+  void changePage() async {
+    await Future.delayed(Duration(seconds: 3));
     bool isLogin = await PreferenceHandler.getLogin();
     print("isLogin: $isLogin");
     Navigator.pushAndRemoveUntil(
       context, 
-      MaterialPageRoute(builder: (context) => WelcomeScreen()),
-      (route)=> false,
-      );
-  });
- } 
-
- @override
- void initState(){
-  changePage();
-  super.initState();
- }
+      MaterialPageRoute(builder: (context) => WelcomeScreen()), 
+      (route) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +35,16 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Spacer(),
+            const Spacer(),
             Image.asset('assets/image/splash.jpg'),
-            SizedBox(height: 20),
-            Spacer(),
-            SafeArea(
-              child: Text("v 4.0.0", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 10)),
-              )
+            const SizedBox(height: 20),
+            const Spacer(),
+            const SafeArea(
+              child: Text(
+                "v 4.0.0",
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 10),
+              ),
+            )
           ],
         ),
       ),

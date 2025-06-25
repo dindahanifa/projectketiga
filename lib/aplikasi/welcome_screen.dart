@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:projectketiga/aplikasi/login_laporan.dart';
+import 'package:projectketiga/aplikasi/regis_laporan.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -28,6 +30,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       backgroundColor: Color(0xFF0b1d51)
                       ),
                     onPressed: () {
+                      Navigator.pushAndRemoveUntil(
+                        context, 
+                        MaterialPageRoute(builder: (context)=> LoginScreen()), 
+                        (route)=> false
+                        );
                     }, 
                     child: Text('Sudah memiliki akun', style: TextStyle(fontWeight: FontWeight.normal, fontSize: 16, color: Colors.white))),
                   SizedBox(height: 16),
@@ -35,7 +42,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     alignment: Alignment.center,
                     child: TextButton(
                       onPressed: () {
-                        
+                        Navigator.pushAndRemoveUntil(
+                          context, 
+                          MaterialPageRoute(builder: (context)=> RegisterScreen()), 
+                          (route)=> false
+                          );
                       }, 
                     style: TextButton.styleFrom(padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     shape: RoundedRectangleBorder(
