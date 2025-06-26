@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projectketiga/aplikasi/home_laporan.dart';
+import 'package:projectketiga/aplikasi/laporan_warga.dart';
 import 'package:projectketiga/aplikasi/login_laporan.dart';
 import 'package:projectketiga/aplikasi/regis_laporan.dart';
 import 'package:projectketiga/aplikasi/splash_screen.dart';
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
         RegisterScreen.id: (context)=> RegisterScreen(),
         LoginScreen.id: (context)=> LoginScreen(),
         HomeScreen.id: (context) => HomeScreen(),
+        LaporanWargaScreen.id: (context) => LaporanWargaScreen(),
       },
       debugShowCheckedModeBanner: false,
       title: 'Project Ketiga',

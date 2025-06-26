@@ -40,7 +40,6 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: Colors.green,
         ),
       );
-
       Navigator.pushNamedAndRemoveUntil(
         context,
         HomeScreen.id,

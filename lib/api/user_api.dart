@@ -70,4 +70,32 @@ class UserService {
       throw Exception("Failed to register user: ${response.statusCode}");
     }
   }
+
+    Future<Map<String, dynamic>> updateProfile(String name) async {
+    String? token = await PreferenceHandler.getToken();
+    if (token == null){
+      throw  Exception('Token tidak ditemukan, silahkan login ulang');
+    }
+    final response = await http.put(
+      Uri.parse(Endpoint.profile),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+        
+      },
+       body: {
+        'name': name,
+      },
+    );
+    print(response.body);
+
+    if (response.statusCode == 200) {
+      return profileResponseFromJson(response.body).toJson();
+    } else if (response.statusCode == 422) {
+      return registerErrorResponseFromJson(response.body).toJson();
+    } else {
+      print("Gagal memuat profil: ${response.statusCode}");
+      throw Exception("Gagal memuat profil: ${response.statusCode}");
+    }
+  }
 }

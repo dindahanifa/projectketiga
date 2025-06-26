@@ -43,7 +43,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
       emailController.clear();
       passwordController.clear();
 
-      Navigator.pop(context);
+    Navigator.pushNamedAndRemoveUntil(
+        context,
+        LoginScreen.id,
+        (route) => false,
+      );
     } else if (res["errors"] != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

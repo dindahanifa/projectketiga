@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:projectketiga/aplikasi/kirim_laporan.dart';
+import 'package:projectketiga/aplikasi/profile_laporan.dart';
+import 'package:projectketiga/aplikasi/laporan_warga.dart';
 
 class HomeScreen extends StatefulWidget {
   static String id = "/home_screen";
@@ -14,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   static final List<Widget> _widgetOptions = <Widget>[
     _HomeContent(),
-    ProfilContent(),
+    ProfilScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -31,74 +34,64 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           print('FAB (+) ditekan!');
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => KirimLaporanScreen()));
         },
         backgroundColor: Colors.blue,
         child: Icon(Icons.add, color: Colors.white),
         shape: CircleBorder(),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: _buildBottomAppBar(),
+      bottomNavigationBar: _buildBottomAppBar(context),
     );
   }
 
-  Widget _buildBottomAppBar() {
-    return BottomAppBar(
-      color: Colors.white,
-      shape: CircularNotchedRectangle(),
-      notchMargin: 8,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          Expanded(
-              child: InkWell(
-            onTap: () => _onItemTapped(0),
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Icon(Icons.home,
-                      color: _selectedIndex == 0
-                          ? Color(0xff1B6BF3)
-                          : Colors.grey),
-                  Text(
-                    'Home',
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: _selectedIndex == 0
-                            ? Color(0xff1B6BF3)
-                            : Colors.grey),
+  Widget _buildBottomAppBar(BuildContext context) {
+    return SafeArea(
+      top: false,
+      child: BottomAppBar(
+        color: Colors.white,
+        shape: CircularNotchedRectangle(),
+        notchMargin: 8,
+        child: SizedBox(
+          height: 60,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Expanded(
+                child: InkWell(
+                  onTap: () => _onItemTapped(0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Icon(Icons.home, color: _selectedIndex == 0 ? Color(0xff1B6BF3) : Colors.grey),
+                      Text(
+                        'Home',
+                        style: TextStyle(fontSize: 12, color: _selectedIndex == 0 ? Color(0xff1B6BF3) : Colors.grey),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-          )),
-          Expanded(child: SizedBox()),
-          Expanded(
-              child: InkWell(
-            onTap: () => _onItemTapped(1),
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Icon(Icons.person,
-                      color: _selectedIndex == 1
-                          ? Color(0xff1B6BF3)
-                          : Colors.grey),
-                  Text(
-                    'Profil',
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: _selectedIndex == 1
-                            ? Color(0xff1B6BF3)
-                            : Colors.grey),
+              Expanded(child: SizedBox()),
+              Expanded(
+                child: InkWell(
+                  onTap: () => _onItemTapped(1),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Icon(Icons.person, color: _selectedIndex == 1 ? Color(0xff1B6BF3) : Colors.grey),
+                      Text(
+                        'Profil',
+                        style: TextStyle(fontSize: 12, color: _selectedIndex == 1 ? Color(0xff1B6BF3) : Colors.grey),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-          )),
-        ],
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -128,10 +121,19 @@ class _HomeContent extends StatelessWidget {
                           color: Colors.black),
                     ),
                     SizedBox(height: 10),
-                    _buildUpdateSection(
-                        "10", "100", "Laporan Baru", Colors.black),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildUpdateSection("10", "100", "Laporan Baru", Color(0xFF1B6BF3)),
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: _buildUpdateSection("5", "50", "Proses", Color(0xFF1B6BF3)),
+                        ),
+                      ],
+                    ),
                     SizedBox(height: 24),
-                    _buildMenuSection(),
+                    _buildMenuSection(context),
                   ],
                 ),
               ),
@@ -162,12 +164,12 @@ class _HomeContent extends StatelessWidget {
     );
   }
 
-  Widget _buildUpdateSection(
-      String count, String total, String title, Color accentColor) {
+  Widget _buildUpdateSection(String count, String total, String title, Color borderColor) {
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
+        border: Border.all(color: borderColor, width: 1.5),
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
@@ -185,21 +187,23 @@ class _HomeContent extends StatelessWidget {
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
-                  color: Colors.grey)),
+                  color: Colors.black)),
           SizedBox(height: 8),
-          Text(title, style: TextStyle(fontSize: 14, color: Colors.grey)),
+          Text(title, style: TextStyle(fontSize: 14, color: Colors.black)),
         ],
       ),
     );
   }
 
-  Widget _buildMenuSection() {
+  Widget _buildMenuSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Menu',
             style: TextStyle(
-                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black)),
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black)),
         SizedBox(height: 8),
         GridView.count(
           shrinkWrap: true,
@@ -208,52 +212,66 @@ class _HomeContent extends StatelessWidget {
           crossAxisSpacing: 10,
           mainAxisSpacing: 10,
           children: [
-            _buildMenuItem(Icons.file_download, 'Laporan masuk'),
-            _buildMenuItem(Icons.file_upload, 'Laporan Keluar'),
-            _buildMenuItem(Icons.drafts, 'Riwayat'),
+            _buildMenuItem(context, 'assets/image/laporan.png', 'Laporan warga'),
+            _buildMenuItem(context, 'assets/image/riwayat.jpg', 'Riwayat'),
+            _buildMenuItem(context, 'assets/image/informasi.png', 'Informasi'),
           ],
         )
       ],
     );
   }
 
-  Widget _buildMenuItem(IconData icon, String title) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: Offset(0, 3),
-          )
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 40, color: Colors.blue),
-          SizedBox(height: 8),
-          Text(title,
+  Widget _buildMenuItem(BuildContext context, String assetPath, String title) {
+    return GestureDetector(
+      onTap: () {
+        if (title == 'Laporan warga') {
+          Navigator.pushNamed(context, '/laporan_warga');
+        } else {
+          showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+              title: Text('Info'),
+              content: Text('Halaman "$title" belum dibuat.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('OK'),
+                ),
+              ],
+            ),
+          );
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: Offset(0, 3),
+            )
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              assetPath,
+              height: 40,
+              width: 40,
+              fit: BoxFit.contain,
+            ),
+            SizedBox(height: 8),
+            Text(
+              title,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, color: Colors.grey))
-        ],
-      ),
-    );
-  }
-}
-
-class ProfilContent extends StatelessWidget {
-  const ProfilContent({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Halaman Profil',
-        style: TextStyle(fontSize: 18),
+              style: TextStyle(fontSize: 12, color: Colors.grey),
+            ),
+          ],
+        ),
       ),
     );
   }
