@@ -135,4 +135,7 @@ class LaporanService {
       throw Exception("Gagal memperbarui laporan: ${response.body}");
     }
   }
+    Future<int?> getLoggedInUserId() async {
+    return await PreferenceHandler.getUserId();
+  }
 }

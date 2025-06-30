@@ -108,9 +108,4 @@ class UserService {
       throw Exception("Gagal memperbarui profil: ${response.statusCode}");
     }
   }
-
-  /// ✅ Tambahan: Ambil user ID dari SharedPreferences
-  Future<int?> getLoggedInUserId() async {
-    return await PreferenceHandler.getUserId();
-  }
 }
