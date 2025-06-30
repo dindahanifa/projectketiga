@@ -5,7 +5,6 @@ import 'package:projectketiga/utils/shared_preferences.dart';
 import 'package:projectketiga/utils/endpoint.dart';
 import 'package:projectketiga/model/user_model.dart';
 
-
 class UserService {
   Future<Map<String, dynamic>> registerUser({
     required String email,
@@ -39,16 +38,28 @@ class UserService {
       headers: {"Accept": "application/json"},
       body: {"email": email, "password": password},
     );
+
     print(response.body);
-    print(response.body);
+
     if (response.statusCode == 200) {
-      print(UserResponseFromJson(response.body).toJson());
-      return UserResponseFromJson(response.body).toJson();
+      final userResponse = UserResponseFromJson(response.body);
+      final token = userResponse.data?.token;
+      final userId = userResponse.data?.user?.id;
+
+      if (token != null && userId != null) {
+        await PreferenceHandler.saveToken(token);
+        await PreferenceHandler.saveUserId(userId); // simpan userId
+        await PreferenceHandler.saveLogin(true);
+        print("Token: $token");
+        print("UserId: $userId");
+      }
+
+      return userResponse.toJson();
     } else if (response.statusCode == 422) {
       return UserResponseFromJson(response.body).toJson();
     } else {
-      print("Failed to register user: ${response.statusCode}");
-      throw Exception("Failed to register user: ${response.statusCode}");
+      print("Login gagal: ${response.statusCode}");
+      throw Exception("Login gagal: ${response.statusCode}");
     }
   }
 
@@ -56,36 +67,35 @@ class UserService {
     String? token = await PreferenceHandler.getToken();
     final response = await http.get(
       Uri.parse(Endpoint.profile),
-      headers: {"Accept": "application/json", "Authorization": "Bearer $token"},
+      headers: {
+        "Accept": "application/json",
+        "Authorization": "Bearer $token",
+      },
     );
     print(response.body);
-    print(response.body);
+
     if (response.statusCode == 200) {
-      print(profileResponseFromJson(response.body).toJson());
       return profileResponseFromJson(response.body).toJson();
     } else if (response.statusCode == 422) {
       return registerErrorResponseFromJson(response.body).toJson();
     } else {
-      print("Failed to register user: ${response.statusCode}");
-      throw Exception("Failed to register user: ${response.statusCode}");
+      print("Gagal mengambil profil: ${response.statusCode}");
+      throw Exception("Gagal mengambil profil: ${response.statusCode}");
     }
   }
 
-    Future<Map<String, dynamic>> updateProfile(String name) async {
+  Future<Map<String, dynamic>> updateProfile(String name) async {
     String? token = await PreferenceHandler.getToken();
-    if (token == null){
-      throw  Exception('Token tidak ditemukan, silahkan login ulang');
+    if (token == null) {
+      throw Exception('Token tidak ditemukan, silakan login ulang');
     }
     final response = await http.put(
       Uri.parse(Endpoint.profile),
       headers: {
         'Accept': 'application/json',
         'Authorization': 'Bearer $token',
-        
       },
-       body: {
-        'name': name,
-      },
+      body: {'name': name},
     );
     print(response.body);
 
@@ -94,8 +104,13 @@ class UserService {
     } else if (response.statusCode == 422) {
       return registerErrorResponseFromJson(response.body).toJson();
     } else {
-      print("Gagal memuat profil: ${response.statusCode}");
-      throw Exception("Gagal memuat profil: ${response.statusCode}");
+      print("Gagal memperbarui profil: ${response.statusCode}");
+      throw Exception("Gagal memperbarui profil: ${response.statusCode}");
     }
+  }
+
+  /// ✅ Tambahan: Ambil user ID dari SharedPreferences
+  Future<int?> getLoggedInUserId() async {
+    return await PreferenceHandler.getUserId();
   }
 }
