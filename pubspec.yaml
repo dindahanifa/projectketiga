@@ -72,9 +72,9 @@ flutter:
   - assets/image/google.png
   - assets/image/backgroundkedua.png
   - assets/image/logo.png
-  - assets/image/riwayat.jpg
-  - assets/image/informasi.png
+  - assets/image/riwayat.png
   - assets/image/laporan.png
+  - assets/image/info.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

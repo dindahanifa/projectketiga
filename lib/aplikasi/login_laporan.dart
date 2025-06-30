@@ -31,8 +31,15 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (res["data"] != null) {
-      PreferenceHandler.saveToken(res["data"]["token"]);
-      print("Token: ${res["data"]["token"]}");
+      final token = res["data"]["token"];
+      final userId = res["data"]["user"]["id"];
+
+      await PreferenceHandler.saveToken(token);
+      await PreferenceHandler.saveUserId(userId);
+      await PreferenceHandler.saveLogin(true);
+
+      print("Token: $token");
+      print("UserID: $userId");
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

@@ -1,9 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:projectketiga/model/kirim_laporan_modelresponse.dart';
-import 'package:projectketiga/model/kirim_laporan_model.dart';
 import 'package:projectketiga/api/laporan_api.dart';
+import 'package:projectketiga/controller/notifier.dart';
 
 class KirimLaporanScreen extends StatefulWidget {
   @override
@@ -14,17 +13,8 @@ class _KirimLaporanScreenState extends State<KirimLaporanScreen> {
   final TextEditingController judulController = TextEditingController();
   final TextEditingController isiController = TextEditingController();
   final TextEditingController lokasiController = TextEditingController();
-  final TextEditingController statusController = TextEditingController();
   File? selectedImage;
   bool isLoading = false;
-
-  final List<String> statusOptions = [
-    'Belum di-approve',
-    'Approve',
-    'Proses',
-    'Sudah dilaksanakan',
-  ];
-  String? selectedStatus;
 
   Future<void> pickImage() async {
     final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -32,8 +22,7 @@ class _KirimLaporanScreenState extends State<KirimLaporanScreen> {
       setState(() {
         selectedImage = File(pickedFile.path);
       });
-          print('Path: ${pickedFile.path}');
-    print('Tipe path: ${pickedFile.path.runtimeType}');
+      print('Path: ${pickedFile.path}');
     }
   }
 
@@ -44,12 +33,17 @@ class _KirimLaporanScreenState extends State<KirimLaporanScreen> {
         judul: judulController.text,
         isi: isiController.text,
         lokasi: lokasiController.text,
-        status: statusController.text,
+        status: 'terkirim', // ⬅️ Kunci: status diatur otomatis
         imageFile: selectedImage,
       );
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Laporan berhasil dikirim')),
       );
+
+      // ⬅️ Trigger daftar laporan untuk refresh
+      laporanNotifier.value = !laporanNotifier.value;
+
       Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -63,7 +57,8 @@ class _KirimLaporanScreenState extends State<KirimLaporanScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Kirim Laporan")),
+      appBar: AppBar(title: Text("Kirim Laporan"), backgroundColor: Colors.white),
+      backgroundColor: Colors.white,
       body: Padding(
         padding: EdgeInsets.all(16),
         child: SingleChildScrollView(
@@ -93,26 +88,6 @@ class _KirimLaporanScreenState extends State<KirimLaporanScreen> {
                   border: OutlineInputBorder(),
                 ),
               ),
-              SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                decoration: InputDecoration(
-                  labelText: 'Status',
-                  border: OutlineInputBorder(),
-                ),
-                value: selectedStatus,
-                onChanged: (value) {
-                  setState(() {
-                    selectedStatus = value;
-                  });
-                },
-                items: 
-                  statusOptions.map((status){
-                    return DropdownMenuItem<String>(
-                      value: status,
-                      child: Text(status)
-                      );
-                  }).toList()
-                ),
               SizedBox(height: 16),
               selectedImage != null
                   ? Image.file(selectedImage!, height: 150)

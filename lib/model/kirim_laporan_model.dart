@@ -12,10 +12,11 @@ class KirimLaporanResponse {
   }
 
   Map<String, dynamic> toJson() => {
-    "message": message,
-    "data": data?.toJson(),
-  };
+        "message": message,
+        "data": data?.toJson(),
+      };
 }
+
 
 class LaporanData {
   final int? id;
@@ -49,12 +50,12 @@ class LaporanData {
   }
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "judul": judul,
-    "isi": isi,
-    "lokasi": lokasi,
-    "status": status,
-    "image_url": imageUrl,
-    "image_path": imagePath,
-  };
+        "id": id,
+        "judul": judul,
+        "isi": isi,
+        "lokasi": lokasi,
+        "status": status,
+        "image_url": imageUrl,
+        "image_path": imagePath,
+      };
 }

@@ -5,4 +5,5 @@ class Endpoint {
   static const String login = "$baseUrlApi/login";
   static const String profile = "$baseUrlApi/profile";
   static const String Laporan = "$baseUrlApi/laporan";
+  static const String Statistik = "$baseUrlApi/statistik";
 }
