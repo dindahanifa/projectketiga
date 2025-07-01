@@ -64,6 +64,7 @@ class _LaporanWargaScreenState extends State<LaporanWargaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[200], // Biar Card putihnya terlihat
       appBar: AppBar(title: const Text("Daftar Laporan Warga")),
       body: FutureBuilder<List<LaporanData>>(
         future: futureLaporanList,
@@ -76,11 +77,12 @@ class _LaporanWargaScreenState extends State<LaporanWargaScreen> {
             return const Center(child: Text('Belum ada laporan'));
           }
 
-          final laporanList = snapshot.data!
-              .where((laporan) =>
-                  laporan.status == "Belum di-approve" ||
-                  laporan.status == "Approve")
-              .toList();
+          final laporanList = snapshot.data!;
+          // Jika hanya ingin status tertentu:
+          // final laporanList = snapshot.data!
+          //     .where((laporan) =>
+          //         laporan.status == "Belum di-approve" || laporan.status == "Approve")
+          //     .toList();
 
           return RefreshIndicator(
             onRefresh: _refreshList,
@@ -90,6 +92,7 @@ class _LaporanWargaScreenState extends State<LaporanWargaScreen> {
                 final laporan = laporanList[index];
 
                 return Card(
+                  color: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -114,9 +117,10 @@ class _LaporanWargaScreenState extends State<LaporanWargaScreen> {
                       else
                         Container(
                           height: 200,
-                          decoration: const BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.only(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(16),
                               topRight: Radius.circular(16),
                             ),
@@ -125,7 +129,6 @@ class _LaporanWargaScreenState extends State<LaporanWargaScreen> {
                             child: Icon(Icons.image, size: 60, color: Colors.white),
                           ),
                         ),
-
                       Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: Column(
@@ -163,20 +166,20 @@ class _LaporanWargaScreenState extends State<LaporanWargaScreen> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (_) => EditLaporanScreen(
-                                              laporan: laporan,
-                                            ),
+                                            builder: (_) =>
+                                                EditLaporanScreen(laporan: laporan),
                                           ),
                                         ).then((value) {
                                           if (value == true) {
-                                            _refreshList(); 
+                                            _refreshList();
                                           }
                                         });
                                       },
                                     ),
                                     IconButton(
                                       icon: const Icon(Icons.delete, color: Colors.red),
-                                      onPressed: () => _hapusLaporan(laporan.id ?? 0),
+                                      onPressed: () =>
+                                          _hapusLaporan(laporan.id ?? 0),
                                     ),
                                   ],
                                 ),

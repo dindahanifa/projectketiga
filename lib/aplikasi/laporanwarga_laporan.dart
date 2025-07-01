@@ -61,11 +61,15 @@ class LaporanWargaPage extends StatelessWidget {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 2,
+      color: const Color(0xff004aad),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        leading: Icon(icon, size: 30),
-        title: Text(text),
-        trailing: const Icon(Icons.chevron_right),
+        leading: Icon(icon, size: 30, color: Colors.white,),
+        title: Text(
+          text,
+          style: const TextStyle(color: Colors.white),
+          ),
+        trailing: const Icon(Icons.chevron_right), iconColor: Colors.white,
         onTap: onTap,
       ),
     );

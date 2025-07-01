@@ -67,6 +67,13 @@ class _KirimLaporanScreenState extends State<KirimLaporanScreen> {
                 controller: judulController,
                 decoration: InputDecoration(
                   labelText: 'Judul',
+                  labelStyle: TextStyle(color: Color(0xff004aad)),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xff004aad), width: 2)
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xff004aad), width: 1)
+                  ),
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -76,6 +83,13 @@ class _KirimLaporanScreenState extends State<KirimLaporanScreen> {
                 maxLines: 5,
                 decoration: InputDecoration(
                   labelText: 'Isi Laporan',
+                  labelStyle: TextStyle(color: Color(0xff004aad)),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xff004aad), width: 2)
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xff004aad), width: 1)
+                  ),
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -84,6 +98,13 @@ class _KirimLaporanScreenState extends State<KirimLaporanScreen> {
                 controller: lokasiController,
                 decoration: InputDecoration(
                   labelText: 'Lokasi',
+                  labelStyle: TextStyle(color: Color(0xff004aad)),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xff004aad), width: 2)
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xff004aad), width: 1)
+                  ),
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -94,8 +115,12 @@ class _KirimLaporanScreenState extends State<KirimLaporanScreen> {
               SizedBox(height: 8),
               ElevatedButton.icon(
                 onPressed: pickImage,
-                icon: Icon(Icons.image),
-                label: Text('Pilih Gambar'),
+                icon: Icon(Icons.image, color: Colors.white),
+                label: Text('Pilih Gambar', style: TextStyle(color: Colors.white),),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xff004aad),
+                  foregroundColor: Colors.white
+                  ),
               ),
               SizedBox(height: 24),
               isLoading
@@ -103,6 +128,10 @@ class _KirimLaporanScreenState extends State<KirimLaporanScreen> {
                   : ElevatedButton(
                       onPressed: submitLaporan,
                       child: Text('Kirim Laporan'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xff004aad),
+                        foregroundColor: Colors.white
+                       ),
                     ),
             ],
           ),

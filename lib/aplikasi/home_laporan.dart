@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projectketiga/api/laporan_api.dart';
 import 'package:projectketiga/aplikasi/daftar_laporan.dart';
+import 'package:projectketiga/aplikasi/informasi_laporan.dart';
 import 'package:projectketiga/aplikasi/kirim_laporan.dart';
 import 'package:projectketiga/aplikasi/laporanwarga_laporan.dart';
 import 'package:projectketiga/aplikasi/profile_laporan.dart';
@@ -184,7 +185,7 @@ class HomeContent extends StatefulWidget {
 class _HomeContentState extends State<HomeContent> {
   int jumlahTerbaru = 0;
   int jumlahProses = 0;
-  int jumlahSelesai = 3; // dummy value untuk bar chart
+  int jumlahSelesai = 3;
   bool isLoading = true;
 
   @override
@@ -309,7 +310,7 @@ class _HomeContentState extends State<HomeContent> {
       child: BarChart(
         BarChartData(
           alignment: BarChartAlignment.spaceAround,
-          maxY: 30,
+          maxY: 50,
           barTouchData: BarTouchData(enabled: false),
           titlesData: FlTitlesData(
             leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -377,19 +378,7 @@ class _HomeContentState extends State<HomeContent> {
         } else if (label == "Riwayat") {
           Navigator.push(context, MaterialPageRoute(builder: (context) => RiwayatLaporanScreen()));
         } else if (label == "Info") {
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: Text("Info"),
-              content: Text("Belum ada informasi"),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text("Tutup")
-                )
-              ],
-            ),
-          );
+          Navigator.push(context, MaterialPageRoute(builder: (context)=> InformasiTerkiniPage()));
         }
       },
       child: Container(
