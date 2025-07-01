@@ -33,7 +33,7 @@ class _KirimLaporanScreenState extends State<KirimLaporanScreen> {
         judul: judulController.text,
         isi: isiController.text,
         lokasi: lokasiController.text,
-        status: 'terkirim', // ⬅️ Kunci: status diatur otomatis
+        status: 'terkirim', 
         imageFile: selectedImage,
       );
 
@@ -41,7 +41,6 @@ class _KirimLaporanScreenState extends State<KirimLaporanScreen> {
         SnackBar(content: Text('Laporan berhasil dikirim')),
       );
 
-      // ⬅️ Trigger daftar laporan untuk refresh
       laporanNotifier.value = !laporanNotifier.value;
 
       Navigator.pop(context);

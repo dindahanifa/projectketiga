@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projectketiga/api/laporan_api.dart';
 import 'package:projectketiga/controller/notifier.dart';
-import 'package:projectketiga/model/Laporan_model.dart';
+import 'package:projectketiga/model/kirim_laporan_model.dart';
 
 class DaftarLaporanScreen extends StatefulWidget {
   @override
@@ -9,7 +9,7 @@ class DaftarLaporanScreen extends StatefulWidget {
 }
 
 class _DaftarLaporanScreenState extends State<DaftarLaporanScreen> {
-  late Future<List<Laporan>> _futureLaporan;
+  late Future<List<LaporanData>> _futureLaporan;
 
   @override
   void initState() {
@@ -41,8 +41,8 @@ class _DaftarLaporanScreenState extends State<DaftarLaporanScreen> {
       backgroundColor: Colors.white,
       body: RefreshIndicator(
         onRefresh: _refreshLaporan,
-        child: FutureBuilder<List<Laporan>>(
-          future: _futureLaporan,
+        child: FutureBuilder<List<LaporanData>>(
+          future: LaporanService().getLaporanList(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());

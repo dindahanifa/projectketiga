@@ -4,8 +4,10 @@ import 'package:projectketiga/aplikasi/daftar_laporan.dart';
 import 'package:projectketiga/aplikasi/kirim_laporan.dart';
 import 'package:projectketiga/aplikasi/laporanwarga_laporan.dart';
 import 'package:projectketiga/aplikasi/profile_laporan.dart';
+import 'package:projectketiga/aplikasi/riwayat_laporan.dart';
 import 'package:projectketiga/controller/notifier.dart';
 import 'package:projectketiga/model/statistik_laporan.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class HomeScreen extends StatefulWidget {
   static String id = "/home_screen";
@@ -182,6 +184,7 @@ class HomeContent extends StatefulWidget {
 class _HomeContentState extends State<HomeContent> {
   int jumlahTerbaru = 0;
   int jumlahProses = 0;
+  int jumlahSelesai = 3; // dummy value untuk bar chart
   bool isLoading = true;
 
   @override
@@ -202,8 +205,7 @@ class _HomeContentState extends State<HomeContent> {
       isLoading = true;
     });
     try {
-      StatistikLaporan? statistik =
-          await LaporanService().getStatistikLaporan();
+      StatistikLaporan? statistik = await LaporanService().getStatistikLaporan();
       if (statistik != null) {
         setState(() {
           jumlahTerbaru = statistik.data?.masuk ?? 0;
@@ -261,16 +263,13 @@ class _HomeContentState extends State<HomeContent> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      _buildBoxWithImage(
-                          context, "Laporan Warga", 'assets/image/laporan.png'),
-                      _buildBoxWithImage(
-                          context, "Riwayat", 'assets/image/riwayat.png'),
-                      _buildBoxWithImage(
-                          context, "Info", 'assets/image/info.png'),
+                      _buildBoxWithImage(context, "Laporan Warga", 'assets/image/laporan.png'),
+                      _buildBoxWithImage(context, "Riwayat", 'assets/image/riwayat.png'),
+                      _buildBoxWithImage(context, "Info", 'assets/image/info.png'),
                     ],
                   ),
                   SizedBox(height: 16),
-                  _buildBox(context, "Statistik", isFull: true),
+                  _buildChartPreview(),
                   SizedBox(height: 100),
                 ],
               ),
@@ -288,8 +287,7 @@ class _HomeContentState extends State<HomeContent> {
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      _buildBoxWithCount(
-                          context, "Laporan Terbaru", jumlahTerbaru),
+                      _buildBoxWithCount(context, "Laporan Terbaru", jumlahTerbaru),
                       _buildBoxWithCount(context, "Proses", jumlahProses),
                     ],
                   ),
@@ -299,20 +297,48 @@ class _HomeContentState extends State<HomeContent> {
     );
   }
 
-  Widget _buildBox(BuildContext context, String text, {bool isFull = false}) {
+  Widget _buildChartPreview() {
     return Container(
-      width: isFull ? double.infinity : 120,
-      height: 100,
-      margin: EdgeInsets.symmetric(horizontal: isFull ? 0 : 5, vertical: 5),
+      height: 150,
+      padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Color(0xffffbd59),
-        borderRadius: BorderRadius.circular(20),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
       ),
-      child: Center(
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+      child: BarChart(
+        BarChartData(
+          alignment: BarChartAlignment.spaceAround,
+          maxY: 30,
+          barTouchData: BarTouchData(enabled: false),
+          titlesData: FlTitlesData(
+            leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: (value, meta) {
+                  switch (value.toInt()) {
+                    case 0:
+                      return Text("Terkirim", style: TextStyle(fontSize: 10));
+                    case 1:
+                      return Text("Proses", style: TextStyle(fontSize: 10));
+                    case 2:
+                      return Text("Selesai", style: TextStyle(fontSize: 10));
+                    default:
+                      return Text("");
+                  }
+                },
+              ),
+            ),
+          ),
+          borderData: FlBorderData(show: false),
+          barGroups: [
+            BarChartGroupData(x: 0, barRods: [BarChartRodData(toY: jumlahTerbaru.toDouble(), color: Colors.blue)]),
+            BarChartGroupData(x: 1, barRods: [BarChartRodData(toY: jumlahProses.toDouble(), color: Colors.orange)]),
+            BarChartGroupData(x: 2, barRods: [BarChartRodData(toY: jumlahSelesai.toDouble(), color: Colors.green)]),
+          ],
         ),
       ),
     );
@@ -331,8 +357,7 @@ class _HomeContentState extends State<HomeContent> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('$count',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            Text('$count', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             Text(
               text,
               textAlign: TextAlign.center,
@@ -344,28 +369,27 @@ class _HomeContentState extends State<HomeContent> {
     );
   }
 
-  Widget _buildBoxWithImage(
-      BuildContext context, String label, String assetPath) {
+  Widget _buildBoxWithImage(BuildContext context, String label, String assetPath) {
     return GestureDetector(
       onTap: () {
         if (label == "Laporan Warga") {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => LaporanWargaPage()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => LaporanWargaPage()));
         } else if (label == "Riwayat") {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => DaftarLaporanScreen()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => RiwayatLaporanScreen()));
         } else if (label == "Info") {
           showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                    title: Text("Info Aplikasi"),
-                    content: Text("Versi 1.0.0 - Aplikasi Laporan Warga"),
-                    actions: [
-                      TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: Text("Tutup"))
-                    ],
-                  ));
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text("Info"),
+              content: Text("Belum ada informasi"),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text("Tutup")
+                )
+              ],
+            ),
+          );
         }
       },
       child: Container(

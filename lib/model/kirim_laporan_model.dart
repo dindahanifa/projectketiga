@@ -20,15 +20,18 @@ class KirimLaporanResponse {
 
 class LaporanData {
   final int? id;
+  final String? userId;
   final String? judul;
   final String? isi;
   final String? lokasi;
   final String? status;
   final String? imageUrl;
   final String? imagePath;
+  
 
   LaporanData({
     this.id,
+    this.userId,
     this.judul,
     this.isi,
     this.lokasi,
@@ -40,6 +43,7 @@ class LaporanData {
   factory LaporanData.fromJson(Map<String, dynamic> json) {
     return LaporanData(
       id: json["id"],
+      userId: json['user_id'],
       judul: json["judul"],
       isi: json["isi"],
       lokasi: json["lokasi"],
@@ -51,6 +55,7 @@ class LaporanData {
 
   Map<String, dynamic> toJson() => {
         "id": id,
+        'user_id': userId,
         "judul": judul,
         "isi": isi,
         "lokasi": lokasi,

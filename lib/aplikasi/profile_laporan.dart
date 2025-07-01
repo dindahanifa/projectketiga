@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:projectketiga/aplikasi/login_laporan.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:projectketiga/api/user_api.dart';
 
@@ -37,9 +38,9 @@ class _ProfilScreenState extends State<ProfilScreen> {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       final appDir = await getApplicationDocumentsDirectory();
-      final fileName = pickedFile.name;
+      final fileName = DateTime.now().millisecondsSinceEpoch.toString();
       final savedImage =
-          await File(pickedFile.path).copy('${appDir.path}/$fileName');
+          await File(pickedFile.path).copy('${appDir.path}/$fileName.jpg');
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('profile_image', savedImage.path);
@@ -48,6 +49,48 @@ class _ProfilScreenState extends State<ProfilScreen> {
         _image = savedImage;
       });
     }
+  }
+
+  Future<void> _logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    if (!mounted) return;
+    Navigator.of(context).pushNamedAndRemoveUntil(LoginScreen.id, (route) => false);
+  }
+
+  void _showEditNameDialog(String currentName) {
+    final nameController = TextEditingController(text: currentName);
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Nama Pengguna'),
+        content: TextField(
+          controller: nameController,
+          decoration: const InputDecoration(labelText: 'Nama'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Batal'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final newName = nameController.text.trim();
+              if (newName.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Nama tidak boleh kosong')),
+                );
+                return;
+              }
+              await userService.updateProfile(newName);
+              setState(() {});
+              Navigator.of(context).pop();
+            },
+            child: const Text('Simpan'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -66,7 +109,7 @@ class _ProfilScreenState extends State<ProfilScreen> {
                 children: [
                   buildTopSection(context, user),
                   const SizedBox(height: 20),
-                  _buildMenuOptions(),
+                  _buildMenuOptions(user),
                 ],
               ),
             );
@@ -106,50 +149,20 @@ class _ProfilScreenState extends State<ProfilScreen> {
                       border: Border.all(color: Colors.white, width: 2),
                     ),
                     padding: const EdgeInsets.all(6),
-                    child: const Icon(Icons.edit, color: Colors.white, size: 16),
+                    child:
+                        const Icon(Icons.edit, color: Colors.white, size: 16),
                   ),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 10),
-          InkWell(
-            onTap: () {
-              final nameController =
-                  TextEditingController(text: user?["name"] ?? '');
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Edit Nama Pengguna'),
-                  content: TextField(
-                    controller: nameController,
-                    decoration: const InputDecoration(labelText: 'Nama'),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Batal'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        final newName = nameController.text;
-                        await userService.updateProfile(newName);
-                        setState(() {});
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Simpan'),
-                    ),
-                  ],
-                ),
-              );
-            },
-            child: Text(
-              user?['name'] ?? 'Nama Pengguna',
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+          Text(
+            user?['name'] ?? 'Nama Pengguna',
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
             ),
           ),
           const SizedBox(height: 5),
@@ -162,7 +175,7 @@ class _ProfilScreenState extends State<ProfilScreen> {
     );
   }
 
-  Widget _buildMenuOptions() {
+  Widget _buildMenuOptions(dynamic user) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -181,16 +194,10 @@ class _ProfilScreenState extends State<ProfilScreen> {
       child: Column(
         children: [
           _buildMenuItem(Icons.person, 'Edit Profil', () {
-            print('Edit Profil');
+            _showEditNameDialog(user?["name"] ?? '');
           }),
           const Divider(indent: 20, endIndent: 20, color: Colors.black),
-          _buildMenuItem(Icons.settings, 'Setting', () {
-            print('Setting');
-          }),
-          const Divider(indent: 20, endIndent: 20, color: Colors.black),
-          _buildMenuItem(Icons.help, 'Help', () {
-            print('Help');
-          }),
+          _buildMenuItem(Icons.key, 'Keluar', _logout), 
         ],
       ),
     );
