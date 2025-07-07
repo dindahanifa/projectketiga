@@ -139,6 +139,7 @@ class LaporanService {
     required int id,
     required String judul,
     required String isi,
+    required String lokasi,
   }) async {
     final token = await PreferenceHandler.getToken();
 
@@ -149,7 +150,7 @@ class LaporanService {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode({'judul': judul, 'isi': isi}),
+      body: jsonEncode({'judul': judul, 'isi': isi, 'lokasi': lokasi}),
     );
 
     print("Update Response: ${response.body}");

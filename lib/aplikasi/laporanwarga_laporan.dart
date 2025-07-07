@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:projectketiga/aplikasi/daftar_laporan.dart';
-import 'package:projectketiga/aplikasi/laporansaya_screen.dart';
 
 class LaporanWargaPage extends StatelessWidget {
   const LaporanWargaPage({super.key});
@@ -15,6 +14,7 @@ class LaporanWargaPage extends StatelessWidget {
         title: const Text(
           'Eksplor Laporan Warga',
           style: TextStyle(
+            fontFamily: 'Jost',
             fontWeight: FontWeight.bold,
             color: Colors.black,
           ),
@@ -40,10 +40,6 @@ class LaporanWargaPage extends StatelessWidget {
                 icon: Icons.monitor,
                 text: 'Pantau laporan yang kamu buat',
                 onTap: () {
-                Navigator.push(
-                  context, 
-                  MaterialPageRoute(builder: (context)=> const LaporanSayaScreen()),
-                  );
                 },
               ),
             ],

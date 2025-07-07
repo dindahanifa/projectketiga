@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projectketiga/api/laporan_api.dart';
 import 'package:projectketiga/aplikasi/daftar_laporan.dart';
+import 'package:projectketiga/aplikasi/darurat_laporan.dart';
 import 'package:projectketiga/aplikasi/informasi_laporan.dart';
 import 'package:projectketiga/aplikasi/kirim_laporan.dart';
 import 'package:projectketiga/aplikasi/laporanwarga_laporan.dart';
@@ -8,6 +9,7 @@ import 'package:projectketiga/aplikasi/profile_laporan.dart';
 import 'package:projectketiga/aplikasi/riwayat_laporan.dart';
 import 'package:projectketiga/controller/notifier.dart';
 import 'package:projectketiga/model/statistik_laporan.dart';
+import 'package:projectketiga/aplikasi/darurat_laporan.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -48,9 +50,19 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 if (_isEmergencyOpen) ...[
-                  _buildEmergencyButton(Icons.phone, 'Panggilan Darurat', () {}),
+                  _buildEmergencyButton(Icons.phone, 'Panggilan Darurat', () {
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(builder: (context)=> const PanggilanDaruratScreen())
+                      );
+                  }),
                   SizedBox(height: 12),
-                  _buildEmergencyButton(Icons.local_hospital, 'Ambulans', () {}),
+                  _buildEmergencyButton(Icons.local_hospital, 'Ambulans', () {
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(builder: (context)=> const PanggilanDaruratScreen())
+                      );
+                  }),
                   SizedBox(height: 12),
                 ],
                 GestureDetector(
@@ -62,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: CircleAvatar(
                     backgroundColor: Colors.redAccent,
                     radius: 23,
-                    child: Icon(Icons.alarm, color: Colors.white),
+                    child: Icon(_isEmergencyOpen ? Icons.close : Icons.alarm, color: Colors.white),
                   ),
                 ),
               ],
@@ -88,25 +100,28 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildEmergencyButton(IconData icon, String label, VoidCallback onTap) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)],
+    return InkWell(
+      onTap: onTap,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)],
+            ),
+            child: Text(label, style: TextStyle(fontSize: 14)),
           ),
-          child: Text(label, style: TextStyle(fontSize: 14)),
-        ),
-        SizedBox(width: 8),
-        CircleAvatar(
-          radius: 20,
-          backgroundColor: Colors.white,
-          child: Icon(icon, color: Colors.red),
-        )
-      ],
+          SizedBox(width: 8),
+          CircleAvatar(
+            radius: 20,
+            backgroundColor: Colors.white,
+            child: Icon(icon, color: Colors.red),
+          )
+        ],
+      ),
     );
   }
 
@@ -246,12 +261,14 @@ class _HomeContentState extends State<HomeContent> {
                   Text("Selamat Datang!",
                       style: TextStyle(
                           color: Colors.white,
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold)),
+                          fontSize: 30,
+                          fontFamily: 'Jost',
+                          fontWeight: FontWeight.bold
+                          )),
                   SizedBox(height: 8),
                   Text(
                     "Laporkan masalah yang Anda temui di sekitar Anda",
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+                    style: TextStyle(color: Colors.white, fontSize: 16, fontFamily: 'Jost',),
                   ),
                 ],
               ),
@@ -347,7 +364,7 @@ class _HomeContentState extends State<HomeContent> {
 
   Widget _buildBoxWithCount(BuildContext context, String text, int count) {
     return Container(
-      width: 130,
+      width: 150,
       height: 100,
       margin: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       decoration: BoxDecoration(

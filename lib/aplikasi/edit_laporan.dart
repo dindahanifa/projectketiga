@@ -40,6 +40,7 @@ class _EditLaporanScreenState extends State<EditLaporanScreen> {
           id: widget.laporan.id!,
           judul: _judulController.text,
           isi: _isiController.text,
+          lokasi: _lokasiController.text,
         );
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -50,6 +51,40 @@ class _EditLaporanScreenState extends State<EditLaporanScreen> {
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Gagal update: $e")),
+        );
+      }
+    }
+  }
+
+  Future<void> _hapusLaporan() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Hapus Laporan"),
+        content: Text("Yakin ingin menghapus laporan ini?"),
+        actions: [
+          TextButton(
+            child: Text("Batal"),
+            onPressed: () => Navigator.pop(context, false),
+          ),
+          TextButton(
+            child: Text("Hapus", style: TextStyle(color: Colors.red)),
+            onPressed: () => Navigator.pop(context, true),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      try {
+        await LaporanService().deleteLaporan(widget.laporan.id!);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Laporan dihapus")),
+        );
+        Navigator.pop(context, true);
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Gagal hapus: $e")),
         );
       }
     }
@@ -82,9 +117,25 @@ class _EditLaporanScreenState extends State<EditLaporanScreen> {
                 validator: (value) => value!.isEmpty ? "Lokasi tidak boleh kosong" : null,
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _simpanPerubahan,
-                child: const Text("Simpan"),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: _simpanPerubahan,
+                      child: const Text("Simpan"),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: _hapusLaporan,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                      ),
+                      child: const Text("Hapus"),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
